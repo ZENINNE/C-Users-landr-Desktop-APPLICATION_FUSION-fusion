@@ -1,0 +1,20 @@
+services:
+  database:
+    image: mysql:${MYSQL_VERSION:-8.0}
+    environment:
+      MYSQL_DATABASE: fusion
+      MYSQL_USER: ${MYSQL_USER:-fusion_app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD before using Docker Compose}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD before using Docker Compose}
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p$${MYSQL_ROOT_PASSWORD}"]
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    volumes:
+      - fusion_database_data:/var/lib/mysql
+
+volumes:
+  fusion_database_data:
